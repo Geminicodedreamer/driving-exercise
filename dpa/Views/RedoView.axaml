@@ -1,0 +1,96 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:lvm="using:dpa.Library.ViewModels"
+             xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
+             xmlns:converters="clr-namespace:dpa.Converters"
+             xmlns:lc="using:dpa.Converters"
+             xmlns:anim="https://github.com/whistyun/AnimatedImage.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="dpa.Views.RedoView"
+             DataContext="{Binding RedoViewModel, Source={StaticResource ServiceLocator}}"
+             x:DataType="lvm:RedoViewModel">
+    
+    <UserControl.Resources>
+        <lc:SelectionConverter x:Key="SelectionConverter" />
+        <lc:WrongAnswerHighlightConverter x:Key="AnswerHighlightConverter" />
+        <lc:StringNotNullOrEmptyConverter x:Key="StringNotNullOrEmptyConverter"/>
+        <lc:StringNullOrEmptyConverter x:Key="StringNullOrEmptyConverter"/>
+        <lc:RedoAnswerConverter x:Key="RedoAnswerConverter1"/>
+    </UserControl.Resources>
+    
+    <Interaction.Behaviors>
+        <EventTriggerBehavior EventName="Initialized">
+            <InvokeCommandAction Command="{Binding ExitRedoCommand}" />
+        </EventTriggerBehavior>
+    </Interaction.Behaviors>
+
+    <Grid ColumnDefinitions="*,300">
+        <Border Grid.Column="0" BorderThickness="1.5" BorderBrush="LightGray" Margin="60,10,10,10">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top" Spacing="20" Margin="10,40,10,20">
+                
+                <Image asyncImageLoader:ImageLoader.Source="{Binding CurrentQuestion.url}" Width="300" Height="200" HorizontalAlignment="Center" 
+                       IsVisible="{Binding CurrentQuestion.url, Converter={StaticResource StringNotNullOrEmptyConverter}}" />
+                <TextBlock Text="{Binding CurrentQuestion.question}" FontWeight="Bold" FontSize="15" HorizontalAlignment="Center" TextWrapping="Wrap" />
+                
+                <StackPanel HorizontalAlignment="Center">
+                    <RadioButton Content="{Binding CurrentQuestion.item1}" GroupName="Options"
+                                 Tag="1" Command="{Binding Path=RadioSelectionCommand, Mode=OneWay}"
+                                 CommandParameter="1"
+                                 Background="{Binding Path=UserAnswer_Answer, Converter={StaticResource RedoAnswerConverter1}, ConverterParameter=1 }"
+                                 IsChecked="{Binding Path=UserAnswer, Converter={StaticResource SelectionConverter}, ConverterParameter=1}"/>
+                    <RadioButton Content="{Binding CurrentQuestion.item2}" GroupName="Options"
+                                 Tag="2" Command="{Binding Path=RadioSelectionCommand, Mode=OneWay}"
+                                 CommandParameter="2"  
+                                 Background="{Binding Path=UserAnswer_Answer, Converter={StaticResource RedoAnswerConverter1}, ConverterParameter=2}"
+                                 IsChecked="{Binding Path=UserAnswer, Converter={StaticResource SelectionConverter}, ConverterParameter=2}"
+                    />
+                    <RadioButton Content="{Binding CurrentQuestion.item3}" GroupName="Options"
+                                 Tag="3" Command="{Binding Path=RadioSelectionCommand, Mode=OneWay}"
+                                 CommandParameter="3"  
+                                 Background="{Binding Path=UserAnswer_Answer, Converter={StaticResource RedoAnswerConverter1}, ConverterParameter=3}"
+                                 IsChecked="{Binding Path=UserAnswer, Converter={StaticResource SelectionConverter}, ConverterParameter=3}"
+                    />
+                    <RadioButton Content="{Binding CurrentQuestion.item4}" GroupName="Options"
+                                 Tag="4" Command="{Binding Path=RadioSelectionCommand, Mode=OneWay}"
+                                 CommandParameter="4"  
+                                 Background="{Binding Path=UserAnswer_Answer, Converter={StaticResource RedoAnswerConverter1}, ConverterParameter=4}"
+                                 IsChecked="{Binding Path=UserAnswer, Converter={StaticResource SelectionConverter}, ConverterParameter=4}"
+                    />
+                </StackPanel>
+                <Label FontSize="15"
+                       Foreground="#505050"
+                       Margin="10,10,0,-10"
+                       Content="答案解析"
+                       VerticalAlignment="Top" />
+                <StackPanel IsVisible="{Binding IsAnswerVisible}">
+                    <TextBlock Text="{Binding Explanation}" FontSize="12" />
+                </StackPanel>
+
+               </StackPanel>
+        </Border>
+        
+        <!-- 右侧面板 -->
+        <Grid Grid.Column="1">
+            <Border BorderThickness="1.2" BorderBrush="#EDEDED">
+                <StackPanel>
+                    <Label FontSize="18" Foreground="#505050" Margin="10,5,0,0" Content="公益广告" VerticalAlignment="Top" />
+                    <Image asyncImageLoader:ImageLoader.Source="avares://dpa/Assets/jiaotonganquan.png" Height="100" Margin="5,5,5,5" />
+                    <TextBox IsReadOnly="True"
+                             FontSize="12"
+                             TextAlignment="Left"
+                             VerticalContentAlignment="Top"
+                             Padding="5,5,5,5"
+                             Margin="6,5,6,0"
+                             TextWrapping="Wrap"
+                             MinHeight="80"
+                             MaxHeight="80"
+                             Background="Azure"
+                             Focusable="False"
+                             Text="“安全驾驶，不仅是对自己负责，更是对他人生命的尊重。每一次出行，都是一次生命的旅行。让我们从自身做起，遵守交通规则，文明礼让，共同营造一个安全、有序、和谐的交通环境。”" />
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>
